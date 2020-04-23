@@ -20,7 +20,8 @@ module OmniAuth
       option :client_options, {
         site: 'https://polarremote.com',
         authorize_url: 'https://flow.polar.com/oauth2/authorization',
-        token_url: 'https://polarremote.com/v2/oauth2/token'
+        token_url: 'https://polarremote.com/v2/oauth2/token',
+        auth_scheme: :basic_auth
       }
       option :authorize_params, {
         response_type: 'code'
@@ -86,7 +87,7 @@ module OmniAuth
         fail!(:failed_to_connect, e)
       end
 
-    protected
+      protected
 
       def encode64_authorization_basic
         Base64.strict_encode64("#{options.client_id}:#{options.client_secret}")
@@ -94,34 +95,7 @@ module OmniAuth
 
       def build_access_token
         verifier = request.params["code"]
-        # headers = {
-        #   headers: {
-        #     "Authorization": "Basic #{encode64_authorization_basic}",
-        #     "Accept": "application/json;charset=UTF-8"
-        #   }
-        # }
-        # client.auth_code.get_token(verifier, headers.merge(token_params.to_hash(:symbolize_keys => true)), deep_symbolize(options.auth_token_params))
-
-        # Note: client.auth_code.get_token(verifier, だと body に client_id と crient_secret が自動で付与され、
-        #       invalid_request となるため独自実装に置き換え
-        faraday_client = Faraday.new(url: 'https://polarremote.com') do |faraday|
-          faraday.request  :url_encoded
-          faraday.response :json
-          faraday.adapter  Faraday.default_adapter
-        end
-
-        resp = faraday_client.post do |req|
-          req.url "/v2/oauth2/token"
-          req.headers['Authorization'] = "Basic #{encode64_authorization_basic}"
-          req.headers["Content-Type"] = "application/x-www-form-urlencoded"
-          req.headers["Accept"] = "application/json;charset=UTF-8"
-          req.body = {
-            :code=> verifier,
-            :grant_type=>  "authorization_code",
-          }
-        end
-
-        ::OAuth2::AccessToken.from_hash(faraday_client, resp.body)
+        client.auth_code.get_token(verifier, {}.merge(token_params.to_hash(:symbolize_keys => true)), deep_symbolize(options.auth_token_params))
       end
 
       def deep_symbolize(options)
@@ -136,10 +110,10 @@ module OmniAuth
         hash = {}
         options.send(:"#{option}_options").select { |key| options[key] }.each do |key|
           hash[key.to_sym] = if options[key].respond_to?(:call)
-            options[key].call(env)
-          else
-            options[key]
-          end
+                               options[key].call(env)
+                             else
+                               options[key]
+                             end
         end
         hash
       end
