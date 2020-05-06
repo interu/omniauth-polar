@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{OmniAuth strategy for Polar AccessLink.}
   spec.description   = %q{OmniAuth strategy for Polar AccessLink.}
-  spec.homepage      = "https://github.com/SonicGarden/omniauth-polar"
+  spec.homepage      = "https://github.com/interu/omniauth-polar"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
