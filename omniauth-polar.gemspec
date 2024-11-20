@@ -37,10 +37,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   #spec.add_dependency 'oauth2'
-  spec.add_dependency 'omniauth-oauth2', '>= 1.4.0', '< 2.0'
-  spec.add_dependency 'omniauth', '~> 1.5'
+  spec.add_dependency 'omniauth-oauth2', '>= 1.4.0'
+  spec.add_dependency 'omniauth', '>= 1.5'
 
-  spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "bundler", ">= 2.0"
+  spec.add_development_dependency "rake", ">= 13.0"
+  spec.add_development_dependency "rspec"
 end
